@@ -21,5 +21,6 @@ Also there is a solution for one consistent way of providing values FROM input G
 The two above are done using Utilities.py and ObservableObjects.py modules.
 
 Two QLineEdit objects (input fields) updates in real time two properties. Third property (which consists of the two mentioned before) is synchornized with QLabel. 
+
 ![My Image](/Resources/GuiTests.gif)
 
