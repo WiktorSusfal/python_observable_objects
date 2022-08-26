@@ -106,7 +106,7 @@ class MainWindow(qtw.QMainWindow):
         # Assign the main widget of the window - created 'ViewModel' class instance
         self.main_widget = MainView(ViewModel())
 
-        self.setWindowTitle('Dynamic GUI List Tests')
+        self.setWindowTitle('In-Background Values Synchronization Tests')
         self.setCentralWidget(self.main_widget)
         self.setFixedSize(500, 150)
 
