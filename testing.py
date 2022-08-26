@@ -47,8 +47,21 @@ if __name__ == '__main__':
     # DO SOME TESTS:
     for _ in range(9):
         # Print all relevant attributes
-        print('Aa.a: ' + str(A_instance.a) + ' | Bb.b: ' + str(B_instance.b_1) + ' | Bb.c: ' + B_instance.b_2)
+        print('a: ' + str(A_instance.a) + ' | b_1: ' + str(B_instance.b_1) + ' | b_2: ' + B_instance.b_2)
         # Change registered attribute value
         A_instance.a += 1
         # STAGE 3 - TRIGGER PROPERTY CHANGED EVENT
         A_instance.publishPropertyChanges(nameof(A_instance.a))
+
+    """
+    The output: 
+    a: 1 | b_1: 1 | b_2: 1
+    a: 2 | b_1: 2 | b_2: 2
+    a: 3 | b_1: 3 | b_2: 3
+    a: 4 | b_1: 4 | b_2: 4
+    a: 5 | b_1: 5 | b_2: 5
+    a: 6 | b_1: 6 | b_2: 6
+    a: 7 | b_1: 7 | b_2: 7
+    a: 8 | b_1: 8 | b_2: 8
+    a: 9 | b_1: 9 | b_2: 9
+    """
