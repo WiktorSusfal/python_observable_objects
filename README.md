@@ -20,7 +20,7 @@ In this case, Views.py contains also a few lines of execution code to present so
 Also there is a solution for one consistent way of providing values FROM input GUI objects (like QLineEdits) TO plain variables - using PyQt5 signal slots. 
 The two above are done using Utilities.py and ObservableObjects.py modules.
 
-Two QLineEdit objects (input fields) updates in real time two properties. Third property (which consists of the two mentioned before) is synchornized with QLabel. 
+Two QLineEdit objects (input fields) update in real time two properties. Third property (which consists of the two mentioned before) is synchronized with QLabel. 
 
 ![My Image](/Resources/GuiTests.gif)
 
