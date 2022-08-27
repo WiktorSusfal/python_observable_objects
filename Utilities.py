@@ -1,9 +1,9 @@
 from enum import *
 
 
-class RegistrationArguments(Enum):
+class PublicationArguments(Enum):
     """
-    Enum class to store types of event registration arguments. Used to build dictionaries of arguments that are passed
+    Enum class to store types of event publication arguments. Used to build dictionaries of arguments that are passed
     to some PropertyChangedEventHandler's functions. Particular enum values acts as keys for dictionaries.
 
     Values:
@@ -41,7 +41,6 @@ class PropertyChangedEventHandler:
     """
     Class to manage the event-driven callback mechanism for exchanging attributes' values between objects.
     Whole process is as follows:
-    - publisher object needs to REGISTER its attribute to let the other objects to subscribe to the attribute's changes,
     - subscriber objects needs to SUBSCRIBE to particular registered attribute
     - publisher object need to PUBLISH changes of its attribute (by calling proper handler's method) - so
     PropertyChangedEventHandler can spread the new value to every relevant subscribers' attributes.
@@ -49,7 +48,26 @@ class PropertyChangedEventHandler:
     callbacks = dict()
 
     @classmethod
-    def registerObservedVariable(cls, prop_changed_event_pub_args: dict):
+    def subscribeToAttribute(cls, callback_data: dict):
+        """
+        Creates subscription to given attribute's changes. Since subscription creation, there will be always relevant
+        callback performed when there is a property change event triggered for subscribed attribute.
+
+        :param callback_data: Dictionary of arguments used to subscribe to particular attribute's changes and
+            to perform relevant callback actions. Build e.g. with 'returnSubscriptionCallbackData' method from this
+            class. Contains keys that conform 'CallbackData' enum values.
+        :return: None
+        """
+        dst_obj, dst_attr, setter_method_ame, src_obj, src_attr, getter_method_name = \
+            cls.extractSubscriptionCallbackData(callback_data)
+
+        # Register observed variable (source of property changed events) if not registered yet
+        cls._registerObservedVariable(src_obj, src_attr)
+        # Add given callback data to the callback's list assigned to the given attribute
+        cls.callbacks[src_obj][src_attr].append(callback_data)
+
+    @classmethod
+    def _registerObservedVariable(cls, pub_obj, obj_property_name: str):
         """
         Method to register new attribute to let other objects to subscribe to its changes. Creates new entry in
         'PropertyChangedEventHandler.callbacks' dictionary being a central database of whole event mechanism.
@@ -70,11 +88,15 @@ class PropertyChangedEventHandler:
             ...
         }
 
-        :param prop_changed_event_pub_args: Dictionary of arguments. Build e.g. with 'returnPropChangedEventPubArgs'
-            method from this class. Contains keys that conform 'RegistrationArguments' enum values.
+        :param pub_obj: Reference to the object containing attribute that the property changed event is triggered for.
+        :param obj_property_name: Name of the changing attribute.
         :return: None
         """
-        pub_obj, obj_property_name = cls.extractPropChangedEventPubArgs(prop_changed_event_pub_args)
+
+        if pub_obj is None:
+            raise ValueError('Cannot register None object in the property changed event handler!')
+        elif obj_property_name is None:
+            raise ValueError('Cannot register property without name in the property changed event handler!')
 
         if pub_obj not in cls.callbacks:
             cls.callbacks[pub_obj] = {obj_property_name: list()}
@@ -82,17 +104,17 @@ class PropertyChangedEventHandler:
             cls.callbacks[pub_obj][obj_property_name] = list()
 
     @classmethod
-    def unregisterObservedVariable(cls, prop_changed_event_pub_args: dict):
+    def _unregisterObservedVariable(cls, pub_obj, obj_property_name: str):
         """
-        Method to unregister given attribute from PropertyChangedEventHandler. After calling this method, subscribing
-        to the attribute's changes will not be possible. Deletes entry in the 'PropertyChangedEventHandler.callbacks'
-        dictionary, related to the specified attribute .
+        Method to unregister given attribute from PropertyChangedEventHandler. After calling this method, triggering
+        property changed event for the given attribute will not start any callback action.
 
-        :param prop_changed_event_pub_args: Dictionary of arguments. Build e.g. with 'returnPropChangedEventPubArgs'
-            method from this class. Contains keys that conform 'RegistrationArguments' enum values.
+        Deletes entry in the 'PropertyChangedEventHandler.callbacks' dictionary, related to the specified attribute .
+
+        :param pub_obj: Reference to the object containing attribute that the property changed event is triggered for.
+        :param obj_property_name: Name of the changing attribute.
         :return: None
         """
-        pub_obj, obj_property_name = cls.extractPropChangedEventPubArgs(prop_changed_event_pub_args)
 
         if pub_obj in cls.callbacks and obj_property_name in cls.callbacks[pub_obj]:
             del cls.callbacks[pub_obj][obj_property_name]
@@ -103,11 +125,11 @@ class PropertyChangedEventHandler:
     @classmethod
     def triggerBindingUpdate(cls, prop_changed_event_pub_args: dict):
         """
-        Method to trigger the property changed event for particular registered attribute - starting the process of
-        spreading given attribute's new value to every subscriber.
+        Method to trigger the property changed event for particular registered attribute
+        - starting the process of spreading given attribute's new value to every subscriber.
 
         :param prop_changed_event_pub_args: Dictionary of arguments. Build e.g. with 'returnPropChangedEventPubArgs'
-            method from this class. Contains keys that conform 'RegistrationArguments' enum values.
+            method from this class. Contains keys that conform 'PublicationArguments' enum values.
         :return: None
         """
         pub_obj, obj_property_name = cls.extractPropChangedEventPubArgs(prop_changed_event_pub_args)
@@ -204,39 +226,20 @@ class PropertyChangedEventHandler:
             # STAGE 2.2 - set the value using setter method
             setter_method(new_value)
 
-    @classmethod
-    def subscribe(cls, callback_data: dict):
-        """
-        Creates subscription to given attribute's changes. Since subscription creation, there will be always relevant
-        callback performed when there is a property change event triggered for subscribed attribute.
-
-        :param callback_data: Dictionary of arguments used to subscribe to particular attribute's changes and
-            to perform relevant callback actions. Build e.g. with 'returnSubscriptionCallbackData' method from this
-            class. Contains keys that conform 'CallbackData' enum values.
-        :return: None
-        """
-        dst_obj, dst_attr, setter_method_ame, src_obj, src_attr, getter_method_name = \
-            cls.extractSubscriptionCallbackData(callback_data)
-
-        if src_obj in cls.callbacks and src_attr in cls.callbacks[src_obj]:
-            cls.callbacks[src_obj][src_attr].append(callback_data)
-
     @staticmethod
     def returnPropChangedEventPubArgs(pub_obj, obj_property_name: str) -> dict:
         """
-        Method to build dictionary of arguments used for:
+        Method to build dictionary of arguments used for triggering property changed event for particular
+        registered attribute.
 
-        - registering/unregistering particular attribute to/from PropertyChangedEventHandler class,
-        - trigger property changed event for particular registered attribute.
-
-        Keys of the result dictionary conform the values from 'RegistrationArguments' enum class.
+        Keys of the result dictionary conform the values from 'PublicationArguments' enum class.
 
         :param pub_obj: Reference to object which contains attribute to register/unregister/trigger event for.
         :param obj_property_name: Name of the attribute to register/unregister/trigger event for.
-        :return: dict( < keys conform the values from 'RegistrationArguments' enum class > )
+        :return: dict( < keys conform the values from 'PublicationArguments' enum class > )
         """
-        return {RegistrationArguments.PUB_OBJ.value: pub_obj,
-                RegistrationArguments.OBJ_PROP_NAME.value: obj_property_name}
+        return {PublicationArguments.PUB_OBJ.value: pub_obj,
+                PublicationArguments.OBJ_PROP_NAME.value: obj_property_name}
 
     @staticmethod
     def extractPropChangedEventPubArgs(prop_changed_event_pub_args: dict) -> tuple:
@@ -244,10 +247,10 @@ class PropertyChangedEventHandler:
         Method to extract the values from dictionary built with 'returnPropChangedEventPubArgs' method.
 
         :param prop_changed_event_pub_args: Dictionary of values built with 'returnPropChangedEventPubArgs' method.
-        :return: Tuple of values from dict parameter whose keys correspond to 'RegistrationArguments' enum values.
+        :return: Tuple of values from dict parameter whose keys correspond to 'PublicationArguments' enum values.
         """
-        return prop_changed_event_pub_args[RegistrationArguments.PUB_OBJ.value], \
-               prop_changed_event_pub_args[RegistrationArguments.OBJ_PROP_NAME.value]
+        return prop_changed_event_pub_args[PublicationArguments.PUB_OBJ.value], \
+               prop_changed_event_pub_args[PublicationArguments.OBJ_PROP_NAME.value]
 
     @staticmethod
     def returnSubscriptionCallbackData(dst_obj, dst_property_name: str, setter_method_name: str,

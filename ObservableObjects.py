@@ -7,28 +7,11 @@ class ObservableObject(object):
     The main aim is to communicate with other objects using event-driven callback mechanism.
     Methods implemented:
 
-    - registerProperty
-    Accepts the name of given object's attribute and registers it to global static 'PropertyChangedEventHandler' class
-    from 'Utilities.py' module. Since then other objects will be able to subscribe to this attribute's value changes -
-    by invoking proper methods on 'PropertyChangedEventHandler' class.
-
     - publishPropertyChanges
     Accepts the name of given object's attribute and triggers the 'PropertyChangedEventHandler' class to spread this
     attribute's new value to all subscribers - by invoking relevant methods on subscriber's objects specified during
     subscriptions creations.
     """
-
-    def registerProperty(self, property_name: str):
-        """
-        Registers given object's attribute to global static 'PropertyChangedEventHandler' class from 'Utilities.py'
-        module. Since then other objects will be able to subscribe to this attribute's value changes - by invoking
-        proper methods on 'PropertyChangedEventHandler' class.
-
-        :param property_name: Name of the given object's attribute to register.
-        :return: None
-        """
-        event_args = uPCEventHandler.returnPropChangedEventPubArgs(self, property_name)
-        uPCEventHandler.registerObservedVariable(event_args)
 
     def publishPropertyChanges(self, property_name: str):
         """
@@ -79,7 +62,7 @@ class ObserverObject(object):
 
         callback_data = uPCEventHandler.returnSubscriptionCallbackData(self, dst_property_name, setter_method_name,
                                                                        src_obj, src_property_name, getter_method_name)
-        uPCEventHandler.subscribe(callback_data)
+        uPCEventHandler.subscribeToAttribute(callback_data)
 
     def updateObjectFromAttribute(self, dst_obj=None, dst_property_name: str = None, setter_method_name: str = None,
                                   src_property_name: str = None, getter_method_name: str = None):
