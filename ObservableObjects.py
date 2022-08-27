@@ -31,8 +31,7 @@ class ObserverObject(object):
     Methods implemented:
 
     - subscribeToVariable
-    Creates subscription to changes of specified attribute (that was previously registered
-    in Utilities.PropertyChangedEventHandler) for given subscriber object.
+    Creates subscription to changes of specified attribute for given subscriber's attribute object.
 
     - updateObjectFromAttribute
     Updates value of specified variable based on the source attribute given, using getter and setter methods specified.
@@ -43,8 +42,7 @@ class ObserverObject(object):
     def subscribeToVariable(self, dst_property_name: str = None, setter_method_name: str = None,
                             src_obj=None, src_property_name: str = None, getter_method_name: str = None):
         """
-        Creates subscription to changes of specified attribute (that was previously registered
-        in Utilities.PropertyChangedEventHandler) for given subscriber object.
+        Creates subscription to changes of specified attribute for given subscriber's attribute object.
 
         :param dst_property_name: Name of attribute that needs to keep track of source's values.
         :param setter_method_name: Name of the method used to set the value of desired attribute (by default, the method
