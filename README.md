@@ -4,7 +4,7 @@ Publisher/Observer pattern for python objects to synchronize data in the backgro
 # modules created:
 Useful modules to implement background data synchronization between objects:
 - Utilities.py - contains definition of 'PropertyChangedEventHandler' class used to manage the event-driven callbacks mechanism
-- ObservableObjects.py - contains definitions of 'ObservableObject' and 'ObserverObject' classes used to create objects that can easily register attributes for publishing their values' changes and subscribe to those changes (for receiving value updates automatically). 'Utilities.py' is a dependency for 'ObservableObjects.py'.
+- ObservableObjects.py - contains definitions of 'ObservableObject' and 'ObserverObject' classes used to create objects that can easily subscribe to given source attribute's changes (for receiving value updates automatically) and publish notifications about their attributes' changing values. 'Utilities.py' is a dependency for 'ObservableObjects.py'.
 
 # modules containing examples of usage:
 Simple presentation of solution:
