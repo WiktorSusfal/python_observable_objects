@@ -16,6 +16,12 @@ Framework for creating PyQt5 GUI python applications in a model similar to C# MV
 - Views.py - contains definition of PyQt5 GUI objects. Data to be displayed with the use of these objects comes from view models object(s).
 
 In this case, Views.py contains also a few lines of execution code to present some solution - in-background synchronization between plain attributes (e.g. strings) and PyQt5 objects (e.g. QLabels). When the value of the string attribute of view model object changes, a property changed event is triggered and the new value is automatically set to the QLabel.
+
 Also there is a solution for one consistent way of providing values FROM input GUI objects (like QLineEdits) TO plain variables - using PyQt5 signal slots. 
+
 The two above are done using Utilities.py and ObservableObjects.py modules.
+
+Two QLineEdit objects (input fields) update in real time two properties. Third property (which consists of the two mentioned before) is synchronized with QLabel. 
+
+![My Image](/Resources/GuiTests.gif)
 
