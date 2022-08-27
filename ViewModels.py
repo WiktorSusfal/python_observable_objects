@@ -13,13 +13,8 @@ class ViewModel(ObservableObject):
         # For larger applications, data models can be stored e.g. in lists or dictionaries to switch between them
         # during application execution
         self.data_models = []
-        # For presentation purposes there will be only one data model object stored
+        # For presentation purposes there will be only one data model object stored. The list above is not used.
         self.current_model: DataModel = DataModel()
-
-        # Register property that needs to be in sync with particular PyQt5 GUI objects - to allow these objects
-        # to subscribe to this property. Registration is done by 'Utilities.PropertyChangedEventHandler' static class.
-        # Property itself is defined below - along with getter and setter method.
-        self.registerProperty(nameof(self.presented_data))
 
     # Define property to interact with 'x' property from current selected data model object (getter and setter
     # functions, docs string etc...)
@@ -53,8 +48,8 @@ class ViewModel(ObservableObject):
     model_y = property(get_model_y, set_model_y, None, 'Variable to interact with datamodel values')
 
     # Define a property to provide data to visualization objects - in this case it consists of data from another
-    # two properties. Notice that this is the same property as the one registered to the PropertyChangedEventHandler in
-    # the class constructor.
+    # two properties. Notice that whenever any of the two component properties changes (when its setter is used), a
+    # property changed event is triggered for 'presented_data' property
     def get_presented_data(self):
         return self.model_x + ' ' + self.model_y
 

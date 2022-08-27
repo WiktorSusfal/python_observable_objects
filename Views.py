@@ -12,10 +12,9 @@ class MainView(qtw.QWidget, ObserverObject):
     in real-time (using PyQt5 signal slots).
     Every time each of the above properties changes, the QLabel widget is automatically updated with 'presented_data'
     property of 'ViewModel' object - with the use of event-driven callbacks mechanism.
-    In the constructor of 'ViewModel' object, the 'presented_data' property is registered to allow other objects
-    to subscribe to its changes. Every time the setter method of 'model_x' or 'model_y' property is called, there is
-    property changed event triggered for 'presented_data' property. There is a subscription to 'presented_data' property
-    made for QLabel object in the constructor of 'MainView' class, so the value can be synchronized automatically
+    Every time the setter method of 'model_x' or 'model_y' property is called, there is a property changed event
+    triggered for 'presented_data' property. There is a subscription to 'presented_data' property made for QLabel object
+    - in the constructor of 'MainView' class, so the value can be synchronized automatically
     """
 
     def __init__(self, v_model: ViewModel):

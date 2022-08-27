@@ -8,7 +8,7 @@ from varname import *
 
 class A(ObservableObject):
     def __init__(self):
-        # Attribute 'a' will be registered as a publisher for property changed events
+        # Attribute 'a' will have property changed events triggered every time its value changes
         self.a = 1
 
 
@@ -28,10 +28,7 @@ if __name__ == '__main__':
     A_instance = A()
     B_instance = B()
 
-    # STAGE 1 - REGISTER VARIABLE THAT NEEDS TO BE OBSERVED
-    A_instance.registerProperty(nameof(A_instance.a))
-
-    # STAGE 2 - SUBSCRIBE TO DESIRED VARIABLE FROM ANOTHER OBJECT
+    # STAGE 1 - SUBSCRIBE TO DESIRED VARIABLE FROM ANOTHER OBJECT
     # Subscription for 'B' class' 'b_1' attribute is made directly. The 'setter_method_name' and 'getter_method_name'
     # are 'None' which means the 'setattr' and 'getattr' functions are used.
     B_instance.subscribeToVariable(dst_property_name=nameof(B_instance.b_1), setter_method_name=None,
@@ -42,7 +39,7 @@ if __name__ == '__main__':
                                    src_obj=A_instance, src_property_name=nameof(A_instance.a), getter_method_name=None)
 
     # Now the 'B_instance' object will automatically receive updates for its attributes based on the subscriptions made
-    # - every time the 'A_instance' object triggers property changed event for its registered attribute
+    # - every time the 'A_instance' object triggers property changed event for its subscribed attribute
 
     # DO SOME TESTS:
     for _ in range(9):
@@ -50,7 +47,7 @@ if __name__ == '__main__':
         print('a: ' + str(A_instance.a) + ' | b_1: ' + str(B_instance.b_1) + ' | b_2: ' + B_instance.b_2)
         # Change registered attribute value
         A_instance.a += 1
-        # STAGE 3 - TRIGGER PROPERTY CHANGED EVENT
+        # STAGE 2 - TRIGGER PROPERTY CHANGED EVENT
         A_instance.publishPropertyChanges(nameof(A_instance.a))
 
     """

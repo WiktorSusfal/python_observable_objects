@@ -34,4 +34,5 @@ class DataModel:
 
     # There can be also another methods for e.g. accessing and loading data into private attributes, validating data...
     # In case there will be need to keep track of this class' attributes' changes, this class must also inherit from
-    # 'ObservableObjects.ObservableObject' class and register all relevant attributes.
+    # 'ObservableObjects.ObservableObject' class and trigger property changed events every time the attribute's
+    # value changes
