@@ -41,7 +41,7 @@ class PropertyChangedEventHandler:
     """
     Class to manage the event-driven callback mechanism for exchanging attributes' values between objects.
     Whole process is as follows:
-    - subscriber objects needs to SUBSCRIBE to particular registered attribute
+    - subscriber objects needs to SUBSCRIBE to particular attribute
     - publisher object need to PUBLISH changes of its attribute (by calling proper handler's method) - so
     PropertyChangedEventHandler can spread the new value to every relevant subscribers' attributes.
     """
